@@ -87,7 +87,7 @@ app.get('/api/card', async (req, res) => {
   const { search, page, limit } = req.query
 
   try {
-    const query = `SELECT * FROM cards WHERE LOWER(name) LIKE '%${search}%' OFFSET ${limit * page} LIMIT ${limit}`
+    const query = `SELECT * FROM cards WHERE LOWER(name) LIKE '%${search}%' OFFSET ${limit * page} LIMIT 100`
     console.log(query)
     const result = await db.query(query)
     res.json({ rows: result.rows, size: result.rows.length })
