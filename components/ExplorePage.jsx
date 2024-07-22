@@ -6,7 +6,8 @@ import {
   ScrollView,
   Pressable,
   RefreshControl,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from 'react-native'
 
 //Data and storage
@@ -57,8 +58,8 @@ export default function Explore() {
     setLoading(true)
     
     try {
-      const res = await axios.get(`${API_HOST}/api/cards?search=${search}&page=${page}&limit=${limit}`)
-      setCards(res.data)
+      const res = await axios.get(`${API_HOST}/api/card?search=${search}&page=${page}&limit=${limit}`)
+      setCards(res.data.rows)
     } catch (error) {
       if (error.response) {
         console.log(error.response.data)
@@ -89,11 +90,28 @@ export default function Explore() {
     }
   }
 
+  //Check to see if the card exists in the collection already
+  function cardExistsInCollection (checkedCard) {
+    return cardCollection.some((card) => card.id === checkedCard.id)
+  }
+
   //Adds a new card to the redux state and local storage
   const addCard = (addedCard) => {
-    const updatedCards = [...cardCollection, addedCard];
-    dispatch(setCardCollection(updatedCards))
-    storeCards(updatedCards)
+    if (cardExistsInCollection(addedCard)) {
+      Alert.alert(
+        'Hold on...',
+        `${addedCard.name} card already exists in your collection.`
+      )
+    } else {
+      const updatedCards = [...cardCollection, addedCard];
+      dispatch(setCardCollection(updatedCards))
+      storeCards(updatedCards)
+
+      Alert.alert(
+        'Success!',
+        `${addedCard.name} card has been added!`
+      )
+    }
   }
 
   //Handles debounce (calls fetch)

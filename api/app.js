@@ -83,14 +83,14 @@ app.get('/', (req, res) => {
 })
 
 //Retrieves cards from the database
-app.get('/api/cards', async (req, res) => {
+app.get('/api/card', async (req, res) => {
   const { search, page, limit } = req.query
 
   try {
-    const query = `SELECT * FROM cards WHERE LOWER(name) LIKE '%${search}%' ORDER BY id DESC LIMIT ${limit}`
+    const query = `SELECT * FROM cards WHERE LOWER(name) LIKE '%${search}%' OFFSET ${limit * page} LIMIT ${limit}`
     console.log(query)
     const result = await db.query(query)
-    res.json(result.rows)
+    res.json({ rows: result.rows, size: result.rows.length })
   } catch (err) {
     console.error(err);
     res.status(500).send('Internal Server Error')
@@ -98,7 +98,7 @@ app.get('/api/cards', async (req, res) => {
 })
 
 //Receives and processes created cards
-app.post('/api/cards', upload.single('image'), async (req, res) => {
+app.post('/api/card', upload.single('image'), async (req, res) => {
   const { name, prayer } = req.body
   const file = req.file
   
