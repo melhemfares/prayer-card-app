@@ -1,36 +1,103 @@
 import { Tabs } from "expo-router";
-import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import Feather from '@expo/vector-icons/Feather';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { AntDesign } from '@expo/vector-icons';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { light, dark } from '../../styles/theme'
+
+import { COLOURS } from '../../constants/theme'
+
+import { disableOverlay } from '../redux/overlay';
 
 const TabsLayout = () => {
+  const dispatch = useDispatch()
+
+  const handleTabPress = () => {
+    dispatch(disableOverlay())
+  }
+
+  const { darkMode } = useSelector((state) => state.darkMode)
+  const theme = darkMode ? dark : light;
+
   return ( 
     <Tabs  
       screenOptions={{
-        tabBarStyle: {
-          height: 60,
-          paddingBottom: 10,
-          padding: 10
-        }
+        tabBarStyle: [theme.settingTab, {
+          height: "10%",
+          padding: "2%",
+          paddingBottom: "2%",
+        }],
+        tabBarLabelStyle: {
+          fontSize: 12,
+        },
+        tabBarActiveTintColor: darkMode ? COLOURS.darkPrimary : COLOURS.primary,
+        tabBarInactiveTintColor: darkMode ? COLOURS.white : COLOURS.black
       }}>
-      <Tabs.Screen name="index"
+      <Tabs.Screen 
+        name="index"
         options={{
           headerTitle: "",
           title: "Collection",
-          tabBarIcon: () => <MaterialCommunityIcons name="cards-outline" size={24} color="black" />
-        }} />
-      <Tabs.Screen name="explore" 
+          tabBarIcon: ({ focused }) => 
+            <MaterialCommunityIcons 
+              name={focused ? "cards" : "cards-outline"} 
+              size={24} 
+              color={focused ? (darkMode ? COLOURS.darkPrimary : COLOURS.primary) : (darkMode ? COLOURS.white : COLOURS.black)}
+            />
+        }}
+        listeners={{
+          tabPress: handleTabPress
+        }} 
+      />
+      <Tabs.Screen 
+        name="explore" 
         options={{
           headerTitle: "",
           title: "Explore",
-          tabBarIcon: () => <Ionicons name="search" size={24} color="black" />
-        }} />
-      <Tabs.Screen name="settings" 
+          tabBarIcon: ({ focused }) => 
+            <Ionicons 
+              name="search" 
+              size={24} 
+              color={focused ? (darkMode ? COLOURS.darkPrimary : COLOURS.primary) : (darkMode ? COLOURS.white : COLOURS.black)}
+            />
+        }}
+        listeners={{
+          tabPress: handleTabPress
+        }}  
+      />
+      <Tabs.Screen 
+        name="create" 
+        options={{
+          headerTitle: "",
+          title: "Create",
+          tabBarIcon: ({ focused }) => 
+            <AntDesign 
+              name={focused ? "plussquare" : "plussquareo"}
+              size={24} 
+              color={focused ? (darkMode ? COLOURS.darkPrimary : COLOURS.primary) : (darkMode ? COLOURS.white : COLOURS.black)}
+            />
+        }}
+        listeners={{
+          tabPress: handleTabPress
+        }} 
+      />
+      <Tabs.Screen 
+        name="settings" 
         options={{
           headerTitle: "",
           title: "Settings",
-          tabBarIcon: () => <Feather name="settings" size={24} color="black" />
-        }} />
+          tabBarIcon: ({ focused }) => 
+            <Ionicons 
+              name={focused ? "settings" : "settings-outline"}
+              size={24} 
+              color={focused ? (darkMode ? COLOURS.darkPrimary : COLOURS.primary) : (darkMode ? COLOURS.white : COLOURS.black)}
+            />
+        }}
+        listeners={{
+          tabPress: handleTabPress
+        }} 
+      />
     </Tabs>
   )
 }
