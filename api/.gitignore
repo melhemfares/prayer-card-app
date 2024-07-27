@@ -11,9 +11,12 @@ npm-debug.*
 web-build/
 data.json
 .env
+Dockerfile
 .dockerignore
 docker-compose.yml
-Dockerfile
 
 # macOS
 .DS_Store
+
+# Local Netlify folder
+.netlify
